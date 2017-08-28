@@ -1,4 +1,4 @@
-package main;
+package fb;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
