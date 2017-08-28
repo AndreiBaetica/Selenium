@@ -28,13 +28,12 @@ public class App {
 		WebDriver driver = new ChromeDriver();
 		JSONObject obj = new JSONObject();
 		JSONArray list = new JSONArray();
-		int x = 1;
 		driver.get("https://warthunder.com/en/media/screenshots/");
 		WebElement next = driver.findElement(By.className("next"));
 
-		downloader(driver, obj, x, list);
+		downloader(driver, obj, 1, list, 0);
 		next.click();
-		downloader(driver, obj, x, list);
+		downloader(driver, obj, 33, list, 0);
 		while (true) {
 			try {
 				next.click();
@@ -43,7 +42,9 @@ public class App {
 				next = driver.findElement(By.className("next"));
 			}
 		}
-		downloader(driver, obj, x, list);
+		// stale element exception only thrown here, first click always works
+		// without issue.
+		downloader(driver, obj, 66, list, 3);
 
 		try {
 			obj.put("src", list);
@@ -55,17 +56,20 @@ public class App {
 		FileWriter fw = new FileWriter(new File("C://Users//Admin//Desktop//Documents//JSON File", "image"));
 		fw.write(obj.toString());
 		fw.close();
-
+		driver.close();
 	}
 
-	static void downloader(WebDriver driver, JSONObject obj, int x, JSONArray list) throws IOException {
-		List<WebElement> screens = driver.findElements(By.tagName("pic"));
-		Iterator<WebElement> iter = screens.iterator();
-		while (iter.hasNext()) {
-			WebElement pic = iter.next();
-			String src = pic.getAttribute("src");
-			list.put(src);
-			URL url = new URL(src);
+	static void downloader(WebDriver driver, JSONObject obj, int imageNumber, JSONArray list, int missingLink)
+			throws IOException {
+		List<WebElement> screens = driver.findElements(By.className("info"));
+		int localNum = 0;
+		for (int i = 0; i < screens.size() - missingLink; i += 3) {
+			// missing link variable in place because the last image throws a
+			// 404 error. This way the loop doesn't include that image.
+			WebElement pictureWebElement = screens.get(i);
+			String imageAddress = pictureWebElement.getAttribute("href");
+			list.put(imageAddress);
+			URL url = new URL(imageAddress);
 			InputStream in = new BufferedInputStream(url.openStream());
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
 			byte[] buf = new byte[1024];
@@ -76,12 +80,12 @@ public class App {
 			out.close();
 			in.close();
 			byte[] response = out.toByteArray();
-			FileOutputStream fos = new FileOutputStream(
-					"C://Users//Admin//Desktop//Documents//Selenium Images//image " + x + ".jpg");
+			FileOutputStream fos = new FileOutputStream("C://Users//Admin//Desktop//Documents//Selenium Images//image "
+					+ (imageNumber + localNum) + ".jpg");
 			fos.write(response);
 			fos.close();
-			x++;
+			localNum++;
 		}
-
+		imageNumber = imageNumber + localNum;
 	}
 }
