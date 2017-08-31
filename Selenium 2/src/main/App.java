@@ -8,7 +8,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Iterator;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -30,7 +29,6 @@ public class App {
 		JSONArray list = new JSONArray();
 		driver.get("https://warthunder.com/en/media/screenshots/");
 		WebElement next = driver.findElement(By.className("next"));
-
 		downloader(driver, obj, 1, list, 0);
 		next.click();
 		downloader(driver, obj, 33, list, 0);
@@ -52,11 +50,12 @@ public class App {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		System.out.println("Writing JSON...");
 		FileWriter fw = new FileWriter(new File("C://Users//Admin//Desktop//Documents//JSON File", "image"));
 		fw.write(obj.toString());
 		fw.close();
 		driver.close();
+		System.out.println("Process completed.");
 	}
 
 	static void downloader(WebDriver driver, JSONObject obj, int imageNumber, JSONArray list, int missingLink)
@@ -85,6 +84,7 @@ public class App {
 			fos.write(response);
 			fos.close();
 			localNum++;
+			System.out.println("Saving photo "+(imageNumber + localNum)+"...");
 		}
 		imageNumber = imageNumber + localNum;
 	}
