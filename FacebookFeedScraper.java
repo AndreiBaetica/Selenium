@@ -70,7 +70,6 @@ public class App {
 			}
 		}
 		URL srcF = new URL(src);
-		// System.out.println(srcF);
 		BufferedImage image = new BufferedImage(403, 403, BufferedImage.TYPE_4BYTE_ABGR);
 		image = ImageIO.read(srcF);
 		ImageIcon icon = new ImageIcon();

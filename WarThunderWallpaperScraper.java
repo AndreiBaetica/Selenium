@@ -47,7 +47,6 @@ public class App {
 		try {
 			obj.put("src", list);
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		System.out.println("Writing JSON...");
